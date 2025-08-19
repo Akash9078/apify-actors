@@ -1,21 +1,7 @@
 <!-- SEO Meta -->
 <meta name="description" content="Production-ready Apify actors for YouTube scraping, financial data extraction, and AI media processing. Trusted web automation tools with SEO-optimized JSON/CSV outputs.">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "Akash's Apify Actors",
-  "applicationCategory": "DeveloperTools",
-  "operatingSystem": "Cloud",
-  "offers": {
-    "@type": "Offer",
-    "price": "0.00",
-    "priceCurrency": "USD"
-  }
-}
-</script>
 
-# 🚀 Apify Actors & Scrapers Suite [v2.4.1]
+# 🚀 Apify Actors & Scrapers Suite
 ![Maintenance](https://img.shields.io/badge/Maintained%3F-Yes-brightgreen)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
@@ -62,21 +48,6 @@ A curated collection of **high‑performance Apify actors** and scrapers for dat
 
 ---
 
-## ⚡ Quick Start Guide
-### 🛠️ Using These Actors
-
-1. **Visit the actor page** (linked above) on Apify.
-2. **Configure the input** JSON according to the documentation.
-3. **Run the actor** – results are delivered via JSON, CSV, or direct storage integrations.
-4. **Integrate** the output into your workflows, dashboards, or AI pipelines.
-
-```json
-{
-  "youtube_url": "https://www.youtube.com/@ChannelID",
-  "max_results": 100,
-  "proxy_config": "auto"
-}
-```
 
 ---
 
@@ -85,12 +56,6 @@ A curated collection of **high‑performance Apify actors** and scrapers for dat
 - **Targeted keywords** embedded in titles, descriptions, and headings improve discoverability on search engines.
 - Structured tables make content **easily crawlable** and **rich‑snippet friendly**.
 - Each actor link points to a dedicated Apify page, boosting **backlink authority**.
-
----
-
-## 📄 License & Contributions
-
-All actors are released under the **MIT License**. Feel free to fork, customize, and submit pull requests. For bug reports or feature requests, open an issue in the repository.
 
 ---
 
