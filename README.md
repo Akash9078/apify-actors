@@ -1,262 +1,69 @@
-# Comprehensive Data Extraction & AI Automation Toolkit | Akash Kumar Naik | Apify Solutions
+# Apify Actors & Scrapers by akash9078
 
-![Apify Badge](https://img.shields.io/badge/Apify-Actors-blue)
-![GitHub Last Commit](https://img.shields.io/github/last-commit/akash9078/scrapers)
+## 📚 Overview
 
-## Transform Your Data Workflows with Advanced Web Scraping & AI Utilities
-
-**Professional-grade automation solutions** for developers, data scientists, and businesses. This toolkit combines **web scraping expertise** with **cutting-edge AI** to deliver:
-
-- **12+ specialized Actors** for data extraction and media processing
-- **Enterprise-grade scalability** with Apify's cloud infrastructure
-- **SEO-optimized data pipelines** for digital marketing insights
-- **Cross-platform compatibility** (Windows/Linux/MacOS)
-- **Pre-built API endpoints** for seamless integration
+A curated collection of **high‑performance Apify actors** and scrapers for data extraction, media processing, and AI‑powered transformations. Optimized for speed, reliability, and SEO‑friendly discoverability—perfect for developers, marketers, and data analysts.
 
 ---
 
-## 🛠️ Featured Automation Solutions
+## 🎬 YouTube Scrapers
 
-### 1. YouTube Data Extraction Suite
-#### 🎥 YouTube Video Scraper
-- **Technical Specs:** 
-  - Input: YouTube channel URL/ID
-  - Output: JSON/CSV with views, engagement metrics, video metadata
-  - Features: Pagination support, proxy rotation, headless browser
-- **SEO Benefits:** Track video SEO performance, analyze competitor content strategies
-
-#### 📜 YouTube Transcript Extractor
-- **Tech Stack:** Whisper ASR, FFmpeg
-- **Formats:** SRT, TXT, JSON
-- **Use Cases:** Content repurposing, closed caption generation, SEO keyword mining
-
-### 2. Financial Data Automation
-#### 📈 Indian Stocks Analysis Scraper
-- **Coverage:** NSE/BSE listed companies
-- **Metrics:** P/E, ROE, debt ratios, institutional holding patterns
-- **Output:** Real-time Excel reports with historical comparisons
-
-### 3. AI-Powered Media Processing
-#### 🤖 AI Face Swap Engine
-- **Model Architecture:** StyleGAN3 + DeepFaceLab
-- **Resolutions:** Up to 4K output
-- **Formats:** PNG, JPG, WEBM
-
-#### 🖼️ Intelligent Image Processor
-- **Features:**
-  - Batch processing (1000+ images/hr)
-  - Neural upscaling (8x resolution)
-  - Smart aspect ratio preservation
-
-### 4. Document Conversion Ecosystem
-#### 📄 PDF Text Extraction System
-- **OCR Accuracy:** 99.5% (printed text), 98% (handwritten)
-- **Languages:** 50+ supported
-- **Security:** Local processing (no cloud upload)
+| Actor | Description | SEO Keywords |
+|-------|-------------|--------------|
+| **[YouTube Channel Video Scraper](https://apify.com/akash9078/youtube-channel-video-scraper)** | Scrape the latest videos, shorts, and live streams from any YouTube channel, including view counts, durations, and upload dates. | `YouTube video scraper`, `YouTube channel data`, `video metadata extraction`, `YouTube API alternative` |
+| **[YouTube Transcript Extractor](https://apify.com/akash9078/youtube-transcript-extractor)** | Convert any YouTube video into searchable, accessible text. Uses advanced anti‑block technology and residential proxies for consistent results. | `YouTube transcript`, `video to text`, `speech-to-text YouTube`, `auto caption extraction` |
+| **[YouTube Comment Scraper](https://apify.com/akash9078/youtube-comment-scraper)** | Extract comments with deep‑learning‑enhanced parsing for high‑resolution results. Ideal for sentiment analysis, market research, and community monitoring. | `YouTube comment scraper`, `comment mining`, `social sentiment`, `YouTube API free` |
 
 ---
 
-## 🚀 How to Use These Tools
+## 📈 Financial Data Scraper
 
-### 1. YouTube Data Extraction Suite
-#### Video Scraper Implementation
-```javascript
-const Apify = require('apify');
-
-Apify.main(async () => {
-    const input = await Apify.getInput();
-    const proxyConfig = {
-        useApifyProxy: true,
-        apifyProxyGroups: ['RESIDENTIAL'], // Use residential proxies for heavy scraping
-    };
-    
-    const crawler = new Apify.PuppeteerCrawler({
-        async requestHandler({ page, request }) {
-            // Wait for dynamic content to load
-            await page.waitForSelector('#title h1', { timeout: 30000 });
-            
-            // Extract video metadata
-            const data = await page.evaluate(() => ({
-                title: document.querySelector('#title h1').innerText.trim(),
-                views: document.querySelector('.view-count')?.innerText.replace(/[^0-9]/g, '') || '0',
-                likes: document.querySelector('button[aria-label="like this video"]')
-                          ?.ariaLabel.match(/\d+/)?.[0] || '0',
-                publishedDate: document.querySelector('#info span:last-child')?.innerText,
-                videoId: new URL(window.location.href).searchParams.get('v')
-            }));
-            
-            // Add additional processing
-            data.engagementRate = ((parseInt(data.likes) / parseInt(data.views)) * 100).toFixed(2);
-            
-            await Apify.pushData(data);
-            
-            // Paginate to next page
-            const nextButton = await page.$('a[aria-label="Next page"]');
-            if (nextButton) {
-                await Apify.enqueueLinks({
-                    urls: [await nextButton.evaluate(el => el.href)],
-                    label: 'NEXT_PAGE'
-                });
-            }
-        },
-        proxyConfiguration: await Apify.createProxyConfiguration(proxyConfig),
-        maxConcurrency: 5, // Parallel scraping instances
-        handlePageTimeoutSecs: 120 // Extended timeout for heavy pages
-    });
-
-    await crawler.run(input);
-});
-```
-
-**Input Configuration (input.json):**
-```json
-{
-    "startUrls": [
-        {
-            "url": "https://www.youtube.com/@ChannelName/videos",
-            "userData": {
-                "channel": "ExampleChannel",
-                "category": "Technology",
-                "priority": "high"
-            }
-        }
-    ],
-    "maxResults": 1000,
-    "proxy": {
-        "useApifyProxy": true,
-        "apifyProxyGroups": ["RESIDENTIAL"],
-        "apifyProxyCountry": "US"
-    },
-    "debugMode": false,
-    "maxConcurrency": 3,
-    "requestTimeout": 120000,
-    "language": "en-US",
-    "videoAge": "last_30_days",
-    "outputFormats": ["json", "csv", "xlsx"]
-}
-```
-
-### 2. Stock Data Analysis Pipeline
-#### Real-time Financial Metrics
-```python
-from apify_client import ApifyClient
-
-client = ApifyClient("YOUR_API_TOKEN")
-run = client.actor("akash9078/stock-scraper").call(
-    run_input={
-        "exchange": "NSE",
-        "tickers": ["RELIANCE", "TCS", "HDFCBANK"],
-        "timeframe": "1D"
-    }
-)
-
-for idx, item in enumerate(client.dataset(run['defaultDatasetId']).iterate_items()):
-    print(f"""
-    Ticker: {item['ticker']}
-    Date: {item['date']}
-    Price: ₹{item['close']:.2f}
-    P/E Ratio: {item['pe_ratio']}
-    ROE: {item['roe']}%
-    52-Week Range: {item['low_52wk']} - {item['high_52wk']}
-    Market Cap: ₹{item['market_cap']/10000000:.2f} Cr
-    Dividend Yield: {item['dividend_yield']}%
-    """)
-    
-    # Save to database
-    if idx % 100 == 0:
-        print(f"Processed {idx+1} records...")
-        
-# Export final dataset
-client.dataset(run['defaultDatasetId']).download(items_format='xlsx', to_file='stock_analysis.xlsx')
-```
-
-### 3. AI Media Processing
-#### Face Swap API Request
-```bash
-curl -X POST https://api.akashautomation.com/v1/faceswap \
-  -H "Authorization: Bearer $API_KEY" \
-  -F "source_image=@source.jpg" \
-  -F "target_image=@target.jpg" \
-  -o output.jpg
-```
+| Actor | Description | SEO Keywords |
+|-------|-------------|--------------|
+| **[Indian Stocks Financial Data Scraper](https://apify.com/akash9078/indian-stocks-financial-data-scraper)** | Pull comprehensive Indian stock market data (prices, fundamentals, earnings, and more) via a ready‑to‑use API. | `Indian stock scraper`, `financial data API`, `stock market data extraction`, `NSE data scraper` |
 
 ---
 
-## ⚙️ Technical Architecture
+## 🖼️ Image & PDF Converters
 
-```mermaid
-graph TD
-    A[User Input] --> B(Apify Cloud)
-    B --> C{Data Type}
-    C -->|Video| D[YouTube Scrapers]
-    C -->|Financial| E[Stock API Bridge]
-    C -->|Media| F[AI Processing Cluster]
-    D --> G[Data Storage]
-    E --> G
-    F --> G
-    G --> H[Output Formats]
-    H --> I[CSV/JSON/Excel]
-    H --> J[PDF/DOCX]
-    H --> K[MP4/PNG]
-```
+| Actor | Description | SEO Keywords |
+|-------|-------------|--------------|
+| **[Frame Image Converter](https://apify.com/akash9078/frame-image-converter)** | Transform images to any aspect ratio (square, widescreen, portrait) with batch processing. | `image aspect ratio converter`, `batch image resize`, `photo cropping tool` |
+| **[Image‑PDF Converter Pro](https://apify.com/akash9078/image-pdf-converter-pro)** | Convert PDFs to images or extract images from PDFs instantly. Supports multiple output formats. | `PDF to image converter`, `extract images from PDF`, `PDF image extraction`, `batch PDF conversion` |
+| **[AI Image Upscaler](https://apify.com/akash9078/ai-image-upscaler)** | AI‑powered upscaling that enlarges photos while preserving sharp details across 10+ formats. | `AI image upscaler`, `photo enlargement`, `image super‑resolution`, `AI upscaling tool` |
+| **[AI Face Swap](https://apify.com/akash9078/ai-face-swap)** | Seamlessly swap faces in images using advanced AI algorithms. Perfect for creative projects and marketing assets. | `AI face swap`, `deepfake image tool`, `face replacement`, `image manipulation AI` |
 
 ---
 
-## 🚀 Key Features
+## 🎤 Text‑to‑Speech & Audio
 
-| Category        | Capabilities                          | Technologies Used       |
-|-----------------|---------------------------------------|-------------------------|
-| Web Scraping    | Pagination, CAPTCHA solving, proxies  | Puppeteer, Cheerio      |
-| AI Processing   | Face detection, NLP, TTS              | TensorFlow, PyTorch     |
-| Data Export     | Multi-format, API endpoints           | FastAPI, Swagger        |
-| Performance     | Distributed processing, async queues  | Redis, RabbitMQ         |
+| Actor | Description | SEO Keywords |
+|-------|-------------|--------------|
+| **[Advanced Text‑to‑Speech](https://apify.com/akash9078/advanced-text-to-speech)** | Generate natural‑sounding speech from text with multiple voice options and language support. | `text to speech`, `TTS API`, `voice synthesis`, `AI speech generator` |
 
 ---
 
-## 📈 SEO Optimization Highlights
+## 🛠️ How to Use These Actors
 
-1. **Keyword-Rich Metadata Extraction**
-2. **Content Gap Analysis Modules**
-3. **Automated Schema.org Markup Generator**
-4. **Competitor Backlink Profiling**
-5. **Search Trend Visualization Tools**
-
----
-
-## 🏆 Why Professionals Choose Us
-
-```python
-class AutomationAdvantages:
-    def __init__(self):
-        self.scalability = "Horizontal scaling via Apify cloud"
-        self.reliability = "99.9% uptime SLA"
-        self.compliance = "GDPR-ready data processing"
-        self.integration = "REST API + Webhooks"
-```
+1. **Visit the actor page** (linked above) on Apify.
+2. **Configure the input** JSON according to the documentation.
+3. **Run the actor** – results are delivered via JSON, CSV, or direct storage integrations.
+4. **Integrate** the output into your workflows, dashboards, or AI pipelines.
 
 ---
 
-## 🛠️ Installation & Deployment
+## 🔍 SEO Benefits
 
-```bash
-# Clone repository
-git clone https://github.com/akash9078/scrapers.git
-
-# Install dependencies
-npm install @apify/actor-node-core
-
-# Configure environment
-cp .env.example .env
-
-# Run specific actor
-apify run youtube-scraper --input input.json
-```
+- **Targeted keywords** embedded in titles, descriptions, and headings improve discoverability on search engines.
+- Structured tables make content **easily crawlable** and **rich‑snippet friendly**.
+- Each actor link points to a dedicated Apify page, boosting **backlink authority**.
 
 ---
 
-## 📬 Support & Collaboration
+## 📄 License & Contributions
 
-**Apify Profile:** [https://apify.com/akash9078](https://apify.com/akash9078)  
-**Enterprise Support:** contact@akashautomation.com  
+All actors are released under the **MIT License**. Feel free to fork, customize, and submit pull requests. For bug reports or feature requests, open an issue in the repository.
 
-[![Star on GitHub](https://img.shields.io/github/stars/akash9078/scrapers?style=social)](https://github.com/akash9078/scrapers)
+---
+
+*Created by **Akash Kumar Naik** – dedicated to building robust, SEO‑optimized web automation tools.*
